@@ -9,8 +9,11 @@ void print_sequence(std::integer_sequence<T, ints...>)
 
 int main()
 {
-	print_sequence(options::option<Ascii>::long_option::sequence_type{});
-	print_sequence(std::variant_alternative_t<0, options::variant_type>::long_option::sequence_type{});
+	using namespace tape;
+
+	print_sequence(option<tag::Ascii>::long_option::sequence_type{});
+	print_sequence(option<std::variant_alternative_t<0, type::tag_variant>::value>::long_option::sequence_type{});
+	std::cout << std::variant_size_v<tape::type::tag_variant> << " options" << std::endl;
 	option_attr<> attr = option_attr<>::Required;
-	return sizeof(options::option<Ascii>) + (attr == option_attr<>::Required);
+	return sizeof(option<tag::Ascii>) + (attr == option_attr<>::Required);
 }
