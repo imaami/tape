@@ -12,4 +12,18 @@ OPTION(Color,  'c',  "color",  2,   "Colorize output")
 OPTION(Help,   'h',  "help",   0,   "Show this help text")
 OPTION(Out,    'o',  "out",    1,   "Output file")
 
+/* These are valid although they have the same character because
+ * NUL is a special value indicating the lack of a short option.
+ */
+OPTION(NoChr1, '\0', "nochr1", 0,   "Has no short option 1")
+OPTION(NoChr2, '\0', "nochr2", 0,   "Has no short option 2")
+
+/* Will cause build to fail because the tag is already in use.
+ */
+//OPTION(Out,    'x',  "xout",   0,   "Definitely not --out, how dare you")
+
+/* Will cause build to fail because the short option is already in use.
+ */
+//OPTION(Other,  'o',  "other",  1,   "Other file")
+
 #endif /* TAPE__OPTIONS_H__INCLUDED_ */

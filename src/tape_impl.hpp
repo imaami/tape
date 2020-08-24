@@ -97,17 +97,12 @@ namespace tape::type {
 		 */
 		void
 
-		#define OPTION(tag_, chr_, str__, arg_, help_) , tag_constant<tape::tag::tag_>::type
+		#define OPTION(tag_, chr_, str__, arg_, help_) , tag_constant<tag::tag_>::type
 		#include "options_p.hpp"
 	>::type;
 
-	template<typename T>
+	template<typename...>
 	struct option {
-		constexpr static const bool exists = false;
-	};
-
-	template<typename T>
-	struct short_option {
 		constexpr static const bool exists = false;
 	};
 
@@ -115,7 +110,7 @@ namespace tape::type {
 	 */
 	#define OPTION(tag_, chr_, str_, arg_, help_) \
 	template<>\
-	struct option<typename tag_constant<tape::tag::tag_>::type> {\
+	struct option<typename tag_constant<tag::tag_>::type, void> {\
 		constexpr static const bool exists = true;\
 		constexpr static const char short_option = chr_;\
 		struct long_option {\
@@ -129,20 +124,47 @@ namespace tape::type {
 		};\
 	};\
 	template<>\
-	struct option<typename char_constant<chr_>::type>\
-		: public option<typename tag_constant<tape::tag::tag_>::type> {};
+	struct option<typename tag_constant<tag::tag_>::type>\
+		: public option<typename tag_constant<tag::tag_>::type, void> {};\
+	template<>\
+	struct option<typename char_constant<chr_>::type,\
+	              typename std::conditional<chr_ != '\0', void, typename tag_constant<tag::tag_>::type>::type>\
+		: public option<typename tag_constant<tag::tag_>::type, void> {};
 	#include "options_p.hpp"
+}
+
+namespace tape::util {
+	template<auto>
+	struct option_by_value
+	{
+		using type = void;
+	};
+
+	template<char V>
+	struct option_by_value<V>
+	{
+		using type = typename type::option<type::char_constant<V>, void>;
+	};
+
+	template<tag V>
+	struct option_by_value<V>
+	{
+		using type = typename type::option<type::tag_constant<V>, void>;
+	};
+
+	template<c_api::tape_option_tag V>
+	struct option_by_value<V>
+	{
+		using type = typename type::option<typename std::variant_alternative<V, type::tag_variant>::type, void>;
+	};
 }
 
 namespace tape {
 	/** Total number of available command-line options */
 	static constexpr const std::size_t num_options = std::variant_size_v<type::tag_variant>;
 
-	template <tape::tag V>
-	using option = type::option<type::tag_constant<V>>;
-
-	template <char C>
-	using short_option = type::option<type::char_constant<C>>;
+	template<auto V>
+	using option = typename util::option_by_value<V>::type;
 
 	template<typename T = std::uint8_t,
 	         util::enable_if_int_t<T, int> = 0>
