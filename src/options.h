@@ -27,4 +27,8 @@ OPTION(NoChr3, '\0', "nochr3", TAPE_REQUIRED_ARG,   "Has no short option 3")
  */
 //OPTION(Other,  'o',  "other",  1,   "Other file")
 
+/* Will cause build to fail because the long option is already in use.
+ */
+//OPTION(LongHelp,  'H',  "help",  0,   "Show long help")
+
 #endif /* TAPE__OPTIONS_H__INCLUDED_ */

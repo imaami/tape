@@ -144,6 +144,7 @@ namespace tape::type {
 
 	template<typename...>
 	struct option {
+		using type = option;
 		constexpr static const bool exists = false;
 	};
 
@@ -153,6 +154,7 @@ namespace tape::type {
 	static_assert(util::is_valid_arg_type_v<arg_>, "invalid tape_arg_type_t value: \"" #arg_ "\"");\
 	template<>\
 	struct option<typename tag_constant<tag::tag_>::type, void> {\
+		using type = option;\
 		constexpr static const bool exists = true;\
 		constexpr static const char short_option = chr_;\
 		struct long_option {\
@@ -166,11 +168,11 @@ namespace tape::type {
 		};\
 	};\
 	template<>\
-	struct option<typename tag_constant<tag::tag_>::type>\
-		: public option<typename tag_constant<tag::tag_>::type, void> {};\
-	template<>\
 	struct option<typename char_constant<chr_>::type,\
 	              typename std::conditional<chr_ != '\0', void, typename tag_constant<tag::tag_>::type>::type>\
+		: public option<typename tag_constant<tag::tag_>::type, void> {};\
+	template<>\
+	struct option<typename option<typename tag_constant<tag::tag_>::type, void>::long_option::sequence_type, void>\
 		: public option<typename tag_constant<tag::tag_>::type, void> {};
 	#include "options_p.hpp"
 }
