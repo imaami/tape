@@ -32,6 +32,47 @@ namespace tape::type {
 
 	template<char... Cs>
 	using char_sequence = std::integer_sequence<char, Cs...>;
+
+	/** A safety wrapper for std::underlying_type_t with the following
+	 * differences:
+	 * - only defined for integrals and enums (SFINAE),
+	 * - evaluates to the input type for integrals (no-op),
+	 * - evaluates to std::underlying_type_t only for enums.
+	 */
+	template<typename T,
+	         std::enable_if_t<std::is_integral_v<T>
+	                          || std::is_enum_v<T>, int> = 0>
+	using u_t = typename std::conditional<
+		std::is_enum_v<T>,
+		std::underlying_type_t<T>,
+		T
+	>::type;
+}
+
+namespace tape::util {
+	/** Cast a value of type U to the underlying type of T.
+	 */
+	template<typename T, typename U>
+	static constexpr inline type::u_t<T> ut_cast(U value) noexcept
+	{
+		return static_cast<type::u_t<T>>(value);
+	}
+
+	/** Return value cast to its own underlying type.
+	 * Shorthand for "ut_cast<decltype(value)>(value)".
+	 */
+	template<typename T>
+	static constexpr inline auto as_ut(T value) noexcept
+	{
+		return ut_cast<T>(value);
+	}
+}
+
+/* We need tape_arg_type enum keys visible in the base namespace for later */
+namespace tape {
+	constexpr static const auto TAPE_NO_ARG       = util::as_ut(c_api::TAPE_NO_ARG);
+	constexpr static const auto TAPE_REQUIRED_ARG = util::as_ut(c_api::TAPE_REQUIRED_ARG);
+	constexpr static const auto TAPE_OPTIONAL_ARG = util::as_ut(c_api::TAPE_OPTIONAL_ARG);
 }
 
 namespace tape::util::impl {
@@ -43,7 +84,7 @@ namespace tape::util::impl {
 
 	template<typename T, T v>
 	struct is_valid_arg_type : public std::bool_constant<
-		is_int<T>::value &&
+		(std::is_enum_v<T> || std::is_integral_v<T>) &&
 		(v == static_cast<T>(c_api::TAPE_NO_ARG      ) ||
 		 v == static_cast<T>(c_api::TAPE_REQUIRED_ARG) ||
 		 v == static_cast<T>(c_api::TAPE_OPTIONAL_ARG))
@@ -67,8 +108,8 @@ namespace tape::util {
 	template<typename T>
 	inline constexpr bool is_int_v = impl::is_int<T>::value;
 
-	template<typename T, T v>
-	inline constexpr bool is_valid_arg_type_v = impl::is_valid_arg_type<T, v>::value;
+	template<auto v>
+	inline constexpr bool is_valid_arg_type_v = impl::is_valid_arg_type<decltype(v), v>::value;
 
 	template<typename I, typename T = void>
 	using enable_if_int_t = typename impl::enable_if_int<I, T>::type;
@@ -109,6 +150,7 @@ namespace tape::type {
 	/* Specialize struct option for each command-line option
 	 */
 	#define OPTION(tag_, chr_, str_, arg_, help_) \
+	static_assert(util::is_valid_arg_type_v<arg_>, "invalid tape_arg_type_t value: \"" #arg_ "\"");\
 	template<>\
 	struct option<typename tag_constant<tag::tag_>::type, void> {\
 		constexpr static const bool exists = true;\
