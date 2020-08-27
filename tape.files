@@ -8,3 +8,4 @@ src/options_p.hpp
 src/tape.h
 src/tape_impl.hpp
 src/test.cpp
+src/type_filter.hpp

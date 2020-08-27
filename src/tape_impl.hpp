@@ -22,6 +22,11 @@ namespace tape {
 	};
 }
 
+/* Type list filter */
+namespace tape {
+	#include "type_filter.hpp"
+}
+
 /* Tuck away our helper types */
 namespace tape::type {
 	template <tape::tag V>
