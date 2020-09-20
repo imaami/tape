@@ -32,8 +32,14 @@ namespace tape::type {
 	template <tape::tag V>
 	using tag_constant = std::integral_constant<tape::tag, V>;
 
+	template<tape::tag V>
+	using tag_constant_t = typename tag_constant<V>::type;
+
 	template <char C>
 	using char_constant = std::integral_constant<char, C>;
+
+	template<char C>
+	using char_constant_t = typename char_constant<C>::type;
 
 	template<char... Cs>
 	using char_sequence = std::integer_sequence<char, Cs...>;
@@ -158,7 +164,7 @@ namespace tape::type {
 	#define OPTION(tag_, chr_, str_, arg_, help_) \
 	static_assert(util::is_valid_arg_type_v<arg_>, "invalid tape_arg_type_t value: \"" #arg_ "\"");\
 	template<>\
-	struct option<typename tag_constant<tag::tag_>::type, void> {\
+	struct option<tag_constant_t<tag::tag_>, void> {\
 		using type = option;\
 		constexpr static const bool exists = true;\
 		constexpr static const char short_option = chr_;\
@@ -173,12 +179,12 @@ namespace tape::type {
 		};\
 	};\
 	template<>\
-	struct option<typename char_constant<chr_>::type,\
-	              typename std::conditional<chr_ != '\0', void, typename tag_constant<tag::tag_>::type>::type>\
-		: public option<typename tag_constant<tag::tag_>::type, void> {};\
+	struct option<char_constant_t<chr_>,\
+	              typename std::conditional<chr_ != '\0', void, tag_constant_t<tag::tag_>>::type>\
+		: public option<tag_constant_t<tag::tag_>, void> {};\
 	template<>\
-	struct option<typename option<typename tag_constant<tag::tag_>::type, void>::long_option::sequence_type, void>\
-		: public option<typename tag_constant<tag::tag_>::type, void> {};
+	struct option<typename option<tag_constant_t<tag::tag_>, void>::long_option::sequence_type, void>\
+		: public option<tag_constant_t<tag::tag_>, void> {};
 	#include "options_p.hpp"
 }
 
