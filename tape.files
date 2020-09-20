@@ -3,11 +3,11 @@ LICENSE.md
 Makefile
 README.md
 common.mk
+include/options_p.hpp
+include/tape.h
+include/tape_impl.hpp
 src/.gitignore
 src/Makefile
 src/options.h
-src/options_p.hpp
-src/tape.h
-src/tape_impl.hpp
 src/test.cpp
 src/type_filter.hpp
