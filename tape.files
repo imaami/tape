@@ -3,7 +3,7 @@ LICENSE.md
 Makefile
 README.md
 common.mk
-include/options_p.hpp
+include/options_priv.hpp
 include/tape.h
 include/tape_impl.hpp
 src/.gitignore

@@ -18,7 +18,7 @@ namespace tape::c_api {
 namespace tape {
 	#define OPTION(tag_, chr_, str_, arg_, help_) tag_ = c_api::tag_,
 	enum struct tag {
-	#include "options_p.hpp"
+	#include "options_priv.hpp"
 	};
 }
 
@@ -150,7 +150,7 @@ namespace tape::type {
 		void
 
 		#define OPTION(tag_, chr_, str__, arg_, help_) , tag_constant<tag::tag_>::type
-		#include "options_p.hpp"
+		#include "options_priv.hpp"
 	>::type;
 
 	template<typename...>
@@ -185,7 +185,7 @@ namespace tape::type {
 	template<>\
 	struct option<typename option<tag_constant_t<tag::tag_>, void>::long_option::sequence_type, void>\
 		: public option<tag_constant_t<tag::tag_>, void> {};
-	#include "options_p.hpp"
+	#include "options_priv.hpp"
 }
 
 namespace tape::util {
