@@ -1,0 +1,24 @@
+#include "type_filter.hpp"
+#include <cstdio>
+
+template <typename T>
+struct is_not_double : std::true_type {};
+
+template <>
+struct is_not_double<double> : std::false_type {};
+
+template <typename T>
+__attribute__((__always_inline__))
+static inline void print_type()
+{
+	puts(__PRETTY_FUNCTION__);
+}
+
+int main()
+{
+	using T = util::filter_t<
+		is_not_double,
+		double, int, char, float*, double, char*, double
+	>;
+	print_type<T>();
+}

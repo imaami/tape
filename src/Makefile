@@ -2,6 +2,7 @@ override DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 include $(DIR)/../common.mk
 
 override TARGET := test
+override IFLAGS := -I$(DIR) -I$(PROJECT_ROOT)include
 
 override C_SRC   := $(wildcard $(DIR)*.c)
 override CXX_SRC := $(wildcard $(DIR)*.cpp)
@@ -17,8 +18,8 @@ override TAIL_CFLAGS := $(if $(strip $(CFLAGS)),$(CFLAGS),-O3 -flto)
 override HEAD_CXXFLAGS := -std=c++17 -Wall -Wextra -pedantic
 override TAIL_CXXFLAGS := $(if $(strip $(CXXFLAGS)),$(CXXFLAGS),-O3 -flto)
 
-override CFLAGS := $(HEAD_CFLAGS) $(TAIL_CFLAGS)
-override CXXFLAGS := $(HEAD_CXXFLAGS) $(TAIL_CXXFLAGS)
+override CFLAGS := $(HEAD_CFLAGS) $(TAIL_CFLAGS) $(IFLAGS)
+override CXXFLAGS := $(HEAD_CXXFLAGS) $(TAIL_CXXFLAGS) $(IFLAGS)
 
 CC := gcc
 CXX := g++
