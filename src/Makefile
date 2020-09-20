@@ -1,4 +1,5 @@
 override DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+include $(DIR)/../common.mk
 
 override TARGET := test
 

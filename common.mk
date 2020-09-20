@@ -16,7 +16,9 @@ override define __recurse =
 	target=$(strip $(2)); \
 	for subdir in $(3); do \
 		echo "Making $$$$target in $$$$subdir"; \
-		cd "$$$$subdir" && $(MAKE) $$$$target || $(1); \
+		cd "$$(DIR)$$$$subdir" || $(1); \
+		$(MAKE) $$$$target || $(1); \
+		cd ..; \
 	done
 endef
 

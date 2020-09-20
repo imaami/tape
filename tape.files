@@ -1,6 +1,8 @@
 .gitignore
 LICENSE.md
+Makefile
 README.md
+common.mk
 src/.gitignore
 src/Makefile
 src/options.h
