@@ -8,6 +8,8 @@ export PROJECT_ROOT
 
 $(info PROJECT_ROOT=$(PROJECT_ROOT))
 
+endif # __COMMON_MK_INCLUDED
+
 #########################################
 ## DO NOT ADD ANYTHING ABOVE THIS LINE ##
 #########################################
@@ -25,7 +27,7 @@ endef
 override define build-subdirs =
 .PHONY: $(strip $(1))
 $(strip $(1)):
-	+$(call __recurse,exit 1,$(strip $(1)),$(strip $(2)))
+	+$(call __recurse,exit 1,$(strip $(2)),$(strip $(3)))
 endef
 
 export build-subdirs
@@ -33,9 +35,7 @@ export build-subdirs
 override define clean-subdirs =
 .PHONY: $(strip $(1))
 $(strip $(1)):
-	+$(call __recurse,true,$(strip $(1)),$(strip $(2)))
+	+$(call __recurse,true,$(strip $(2)),$(strip $(3)))
 endef
 
 export clean-subdirs
-
-endif # __COMMON_MK_INCLUDED
