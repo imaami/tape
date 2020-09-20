@@ -12,12 +12,21 @@ OPTION(Color,  'c',  "color",  TAPE_OPTIONAL_ARG,   "Colorize output")
 OPTION(Help,   'h',  "help",   0,                   "Show this help text")
 OPTION(Out,    'o',  "out",    1,                   "Output file")
 
-/* These are valid although they have the same character because
- * NUL is a special value indicating the lack of a short option.
+/* These are valid although they have the same short option character.
+ * Setting the character to '\0' disables the short option for a tag.
+ *
  */
 OPTION(NoChr1, '\0', "nochr1", 1,                   "Has no short option 1")
 OPTION(NoChr2, '\0', "nochr2", true,                "Has no short option 2")
 OPTION(NoChr3, '\0', "nochr3", TAPE_REQUIRED_ARG,   "Has no short option 3")
+
+/* These are valid although they have the same long option string.
+ * Setting the string to "" disables the long option for a tag.
+ *
+ * TODO: Not implemented yet
+ */
+//OPTION(NoStr1, 'n',  "",       0,                   "Has no long option 1")
+//OPTION(NoStr2, 'm',  "",       0,                   "Has no long option 2")
 
 /* Will cause build to fail because the tag is already in use.
  */
