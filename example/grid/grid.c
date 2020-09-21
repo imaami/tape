@@ -1,7 +1,4 @@
 #include "grid.h"
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "module_priv.h"
 
 static int
@@ -15,5 +12,5 @@ callback (int    argc __attribute__((__unused__)),
 const module_t grid = {
 	"grid",
 	"Draw an ASCII grid.",
-	callback
+	callback, module_help
 };

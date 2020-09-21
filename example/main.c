@@ -59,12 +59,14 @@ usage (char *argv0)
 		}
 	}
 
-	max += 2;
-
-	fprintf(stderr, "usage: %s COMMAND [OPTION]...\n\n"
-	                "commands:\n", prog);
+	printf("\nusage: %s COMMAND [OPTIONS]...\n", prog);
 
 	for_each_module (ptr, &iter, modules) {
-		fprintf(stderr, "  %-*s\t%s\n", max, ptr->name, ptr->help);
+		printf("\n %-*s [OPTIONS]...\t%s\n\n", max, ptr->name, ptr->what);
+		if (ptr->help) {
+			ptr->help("   ");
+		}
 	}
+
+	putchar('\n');
 }

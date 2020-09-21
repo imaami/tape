@@ -18,14 +18,18 @@ typedef struct module_iter module_iter_t;
 typedef const module_t *const module_list_t;
 
 /** Module invocation callback type. */
-typedef int callback_t(int argc, char **argv);
+typedef int exec_cb_t(int argc, char **argv);
+
+/** Module help printout callback type. */
+typedef void help_cb_t(const char *line_prefix);
 
 /** Module descriptor. */
 struct module
 {
 	const char *name;
-	const char *help;
-	callback_t *func;
+	const char *what;
+	exec_cb_t  *exec;
+	help_cb_t  *help;
 };
 
 /** Module iterator. */
@@ -69,12 +73,5 @@ extern int
 module_invoke (const module_t  *module,
                int              argc,
                char           **argv);
-
-/** Find the named module and invoke it with a set of command-line arguments. */
-extern int
-module_invoke_by_name (module_list_t  *list,
-                       const char     *name,
-                       int             argc,
-                       char          **argv);
 
 #endif /* TAPE__EXAMPLE__MODULE_H__INCLUDED_ */

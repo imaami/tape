@@ -15,5 +15,5 @@ callback (int    argc __attribute__((__unused__)),
 const module_t wait = {
 	"wait",
 	"Sleep for a specified amount of time.",
-	callback
+	callback, module_help
 };

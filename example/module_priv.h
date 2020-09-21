@@ -3,6 +3,8 @@
 
 #include "tape.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -51,7 +53,7 @@ module_option_tag_name (tape_option_tag_t tag)
 	}
 }
 
-__attribute__((__unused__, __pure__))
+__attribute__((__pure__))
 static char
 module_option_char (tape_option_tag_t tag)
 {
@@ -62,7 +64,6 @@ module_option_char (tape_option_tag_t tag)
 	}
 }
 
-__attribute__((__unused__))
 static const char *
 module_option_string (tape_option_tag_t tag)
 {
@@ -71,6 +72,18 @@ module_option_string (tape_option_tag_t tag)
 	#include "options_priv.h"
 	default: return NULL;
 	}
+}
+
+__attribute__((__pure__))
+static size_t
+module_option_string_max_len (void)
+{
+	size_t max = 0;
+
+	#define OPTION(tag_, chr_, str_, arg_, help_) if ((sizeof(str_) - 1u) > max) { max = sizeof(str_) - 1u; }
+	#include "options_priv.h"
+
+	return max;
 }
 
 __attribute__((__unused__, __pure__))
@@ -97,7 +110,6 @@ module_option_tag_from_char (tape_option_tag_t *tag,
 	return true;
 }
 
-__attribute__((__unused__))
 static const char *
 module_option_help (tape_option_tag_t tag)
 {
@@ -105,6 +117,29 @@ module_option_help (tape_option_tag_t tag)
 	#define OPTION(tag_, chr_, str_, arg_, help_) case tag_: return help_;
 	#include "options_priv.h"
 	default: return NULL;
+	}
+}
+
+__attribute__((__unused__))
+static void
+module_help (const char *line_prefix)
+{
+	const int str_width_max = (int)module_option_string_max_len() + 2;
+	const long tag_value_max = (long)module_option_tag_max();
+	long tag_value = (long)module_option_tag_min();
+
+	if (line_prefix == NULL) {
+		line_prefix = "";
+	}
+
+	for (; tag_value <= tag_value_max; ++tag_value) {
+		tape_option_tag_t tag = (tape_option_tag_t)tag_value;
+
+		const char *help_str = module_option_help(tag);
+		const char *str = module_option_string(tag);
+		char chr = module_option_char(tag);
+
+		printf("%s-%c, --%-*s\t%s\n", line_prefix, chr, str_width_max, str, help_str);
 	}
 }
 

@@ -31,14 +31,5 @@ module_invoke (const module_t  *module,
 		return EXIT_FAILURE;
 	}
 
-	return module->func(argc, argv);
-}
-
-int
-module_invoke_by_name (module_list_t  *list,
-                       const char     *name,
-                       int             argc,
-                       char          **argv)
-{
-	return module_invoke(module_list_find_by_name(list, name), argc, argv);
+	return module->exec(argc, argv);
 }
