@@ -8,10 +8,12 @@ example/Makefile
 example/grid/Makefile
 example/grid/grid.c
 example/grid/grid.h
+example/grid/options.h
 example/main.c
 example/module.c
 example/module.h
 example/wait/Makefile
+example/wait/options.h
 example/wait/wait.c
 example/wait/wait.h
 include/options_priv.hpp
