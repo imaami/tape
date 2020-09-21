@@ -12,6 +12,7 @@ example/grid/options.h
 example/main.c
 example/module.c
 example/module.h
+example/module_priv.h
 example/wait/Makefile
 example/wait/options.h
 example/wait/wait.c
