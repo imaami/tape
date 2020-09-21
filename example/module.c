@@ -3,15 +3,21 @@
 #include <string.h>
 
 const module_t *
-module_list_find_by_name (const module_t *const *list,
-                          const char            *name)
+module_list_find_by_name (module_list_t *list,
+                          const char    *name)
 {
 	if (!list || !name) {
 		return NULL;
 	}
 
+	module_iter_t  iter;
 	const module_t *ptr;
-	for (; (ptr = *list) && strcmp(name, ptr->name); ++list) {}
+
+	for_each_module (ptr, &iter, list) {
+		if (!strcmp(name, ptr->name)) {
+			break;
+		}
+	}
 
 	return ptr;
 }
@@ -29,10 +35,10 @@ module_invoke (const module_t  *module,
 }
 
 int
-module_invoke_by_name (const module_t *const  *list,
-                       const char             *name,
-                       int                     argc,
-                       char                  **argv)
+module_invoke_by_name (module_list_t  *list,
+                       const char     *name,
+                       int             argc,
+                       char          **argv)
 {
 	return module_invoke(module_list_find_by_name(list, name), argc, argv);
 }

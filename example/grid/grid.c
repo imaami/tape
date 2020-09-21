@@ -10,4 +10,8 @@ callback (int    argc __attribute__((__unused__)),
 	return 0;
 }
 
-const module_t grid = { "grid", callback };
+const module_t grid = {
+	"grid",
+	"Draw an ASCII grid.",
+	callback
+};
