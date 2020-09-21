@@ -1,7 +1,7 @@
 override DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 include $(DIR)common.mk
 
-SUBDIRS := src
+SUBDIRS := src example
 
 .PHONY: default
 default: all
