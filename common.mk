@@ -29,24 +29,27 @@ override CXXFLAGS := $(HEAD_CXXFLAGS) $(TAIL_CXXFLAGS)
 
 override define __recurse =
 	target=$(strip $(2)); \
-	for subdir in $(3); do \
-		echo "Making $$$$target in $$$$subdir"; \
-		cd "$$(DIR)$$$$subdir" || $(1); \
-		$(MAKE) $$$$target || $(1); \
-		cd ..; \
-	done
+	subdir="$(strip $(3))"; \
+	echo "Making $$$$target in $$$$subdir"; \
+	$(MAKE) -C "$$(DIR)$$$$subdir" $$$$target || $(1);
 endef
 
 override define build-subdirs =
+.PHONY: $(strip $(3))
+$(strip $(3)):
+	+$(call __recurse,exit 1,$(strip $(2)),$$@)
+
 .PHONY: $(strip $(1))
-$(strip $(1)):
-	+$(call __recurse,exit 1,$(strip $(2)),$(strip $(3)))
+$(strip $(1)): $(strip $(3))
 endef
 
 override define clean-subdirs =
+.PHONY: $(patsubst %,%-clean,$(strip $(3)))
+$(patsubst %,%-clean,$(strip $(3))):
+	+$(call __recurse,true,$(strip $(2)),$$(subst -clean,,$$@))
+
 .PHONY: $(strip $(1))
-$(strip $(1)):
-	+$(call __recurse,true,$(strip $(2)),$(strip $(3)))
+$(strip $(1)): $(patsubst %,%-clean,$(strip $(3)))
 endef
 
 override define build-c-obj =
