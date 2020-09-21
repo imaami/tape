@@ -11,9 +11,6 @@ override CXX_OBJ := $(CXX_SRC:.cpp=.cpp.o)
 
 override OBJ := $(C_OBJ) $(CXX_OBJ)
 
-CC := gcc
-CXX := g++
-
 .PHONY: all clean $(TARGET)
 
 all: $(TARGET)

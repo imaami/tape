@@ -14,6 +14,9 @@ endif # __COMMON_MK_INCLUDED
 ## DO NOT ADD ANYTHING ABOVE THIS LINE ##
 #########################################
 
+CC := gcc
+CXX := g++
+
 override HEAD_CFLAGS := -std=gnu11 -Wall -Wextra
 override TAIL_CFLAGS := $(if $(strip $(CFLAGS)),$(CFLAGS),-O3 -flto)
 
