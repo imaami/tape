@@ -16,7 +16,7 @@ example/wait/Makefile
 example/wait/options.h
 example/wait/wait.c
 example/wait/wait.h
-include/options_priv.hpp
+include/options_priv.h
 include/tape.h
 include/tape_impl.hpp
 src/.gitignore
