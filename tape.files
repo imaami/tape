@@ -5,10 +5,16 @@ README.md
 common.mk
 example/.gitignore
 example/Makefile
+example/command.c
+example/command.h
 example/grid/Makefile
 example/grid/grid.c
 example/grid/grid.h
 example/grid/options.h
+example/handler.c
+example/handler.h
+example/list.c
+example/list.h
 example/main.c
 example/module.c
 example/module.h
