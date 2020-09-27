@@ -5,6 +5,8 @@ README.md
 common.mk
 example/.gitignore
 example/Makefile
+example/buf.c
+example/buf.h
 example/command.c
 example/command.h
 example/dispatch/Makefile
