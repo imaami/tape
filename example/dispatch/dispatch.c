@@ -38,9 +38,12 @@ callback (int    argc,
 		return 1;
 	}
 
-	printf("fifo: %s\n", fifo);
+	if (!dispatcher_init(&dispatcher, fifo)) {
+		fprintf(stderr, "%s: dispatcher init failed\n", argv[0]);
+		return 1;
+	}
 
-	return 0;
+	return dispatcher_run(&dispatcher);
 }
 
 const module_t dispatch = {
