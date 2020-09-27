@@ -7,11 +7,17 @@ override MODULES := grid wait
 override C_SRC   := $(wildcard $(DIR)*.c)
 override CXX_SRC := $(wildcard $(DIR)*.cpp)
 
+override MOD_C_SRC   := $(wildcard $(MODULES:%=$(DIR)%/*.c))
+override MOD_CXX_SRC := $(wildcard $(MODULES:%=$(DIR)%/*.cpp))
+
 override C_OBJ   := $(C_SRC:.c=.c.o)
 override CXX_OBJ := $(CXX_SRC:.cpp=.cpp.o)
 
+override MOD_C_OBJ   := $(MOD_C_SRC:.c=.c.o)
+override MOD_CXX_OBJ := $(MOD_CXX_SRC:.cpp=.cpp.o)
+
 override OBJ := $(C_OBJ) $(CXX_OBJ)
-override MOD_OBJ := grid/grid.c.o wait/wait.c.o
+override MOD_OBJ := $(MOD_C_OBJ) $(MOD_CXX_OBJ)
 
 .PHONY: all clean $(TARGET)
 
@@ -29,5 +35,5 @@ $(eval $(call clean-subdirs, modules-clean, clean, $(MODULES)))
 $(foreach obj,$(C_OBJ),$(eval $(call build-c-obj,$(obj))))
 $(foreach obj,$(CXX_OBJ),$(eval $(call build-cxx-obj,$(obj))))
 
-$(DIR)$(TARGET): $(OBJ)
-	cd "$(DIR)" && $(CC) $(CFLAGS) $(notdir $^) $(MOD_OBJ) -o $(notdir $@)
+$(DIR)$(TARGET): $(OBJ) $(MOD_OBJ)
+	cd "$(DIR)" && $(CC) $(CFLAGS) $(^:$(DIR)%=%) -o $(notdir $@)
