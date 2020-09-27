@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -97,8 +98,8 @@ module_option_arg_type (tape_option_tag_t tag)
 	}
 }
 
-__attribute__((__unused__, __pure__))
-static inline bool
+__attribute__((__unused__))
+static bool
 module_option_tag_from_char (tape_option_tag_t *tag,
                              char               c)
 {
@@ -108,6 +109,43 @@ module_option_tag_from_char (tape_option_tag_t *tag,
 	default: return false;
 	}
 	return true;
+}
+
+__attribute__((__unused__))
+static const char *
+module_option_tag_from_string (tape_option_tag_t *tag,
+                               const char        *ptr)
+{
+	const char *next_ptr = NULL;
+	tape_option_tag_t found_tag;
+	tape_arg_type_t arg_type;
+
+	do {
+		#define OPTION(tag_, chr_, str_, arg_, help_) \
+		{ \
+			const size_t len = sizeof(str_) - 1u; \
+			if (strncmp(ptr, str_, len) == 0 && \
+			    (ptr[len] == '\0' || ptr[len] == '=')) { \
+				next_ptr = ptr + len; \
+				found_tag = tag_; \
+				arg_type = arg_; \
+				break; \
+			} \
+		}
+		#include "options_priv.h"
+
+		return NULL;
+	} while (0);
+
+	if (*next_ptr == '=') {
+		if (arg_type == TAPE_NO_ARG) {
+			return NULL;
+		}
+		next_ptr++;
+	}
+
+	*tag = found_tag;
+	return next_ptr;
 }
 
 static const char *

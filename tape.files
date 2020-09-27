@@ -7,6 +7,12 @@ example/.gitignore
 example/Makefile
 example/command.c
 example/command.h
+example/dispatch/Makefile
+example/dispatch/dispatch.c
+example/dispatch/dispatch.h
+example/dispatch/dispatcher.c
+example/dispatch/dispatcher.h
+example/dispatch/options.h
 example/grid/Makefile
 example/grid/grid.c
 example/grid/grid.h

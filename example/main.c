@@ -4,10 +4,12 @@
 #include <string.h>
 
 #include "module.h"
+#include "dispatch/dispatch.h"
 #include "grid/grid.h"
 #include "wait/wait.h"
 
 static MODULE_LIST( modules,
+	&dispatch,
 	&grid,
 	&wait
 );
