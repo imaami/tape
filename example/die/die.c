@@ -1,16 +1,16 @@
-#include "grid.h"
+#include "die.h"
 #include "module_priv.h"
 
 static int
 callback (int    argc __attribute__((__unused__)),
           char **argv __attribute__((__unused__)))
 {
-	puts("<grid>");
+	exit(0);
 	return 0;
 }
 
 MODULE(
-	grid,
-	"Draw an ASCII grid.",
+	die,
+	"Die.",
 	callback
 );

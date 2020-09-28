@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "dispatch/dispatch.h"
-#include "grid/grid.h"
+#include "die/die.h"
 #include "wait/wait.h"
 
 #include "module_list.h"
@@ -11,7 +11,7 @@
 
 static MODULE_LIST( modules,
 	&dispatch,
-	&grid,
+	&die,
 	&wait
 );
 
