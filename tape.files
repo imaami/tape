@@ -27,6 +27,7 @@ example/main.c
 example/module.c
 example/module.h
 example/module_priv.h
+example/module_types.h
 example/wait/Makefile
 example/wait/options.h
 example/wait/wait.c

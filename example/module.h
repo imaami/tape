@@ -1,21 +1,14 @@
 #ifndef TAPE__EXAMPLE__MODULE_H__INCLUDED_
 #define TAPE__EXAMPLE__MODULE_H__INCLUDED_
 
+#include "module_types.h"
+
 /** Define a module descriptor pointer array. */
 #define MODULE_LIST(name, ...) module_list_t name[] = { __VA_ARGS__, NULL }
 
 /** Iterate a module descriptor pointer array. */
 #define for_each_module(ptr, iter, list) \
 	for (module_iter_init(iter, list); (ptr = module_iter_get(iter)); module_iter_next(iter))
-
-/** Module descriptor type. */
-typedef struct module module_t;
-
-/** Module iterator type. */
-typedef struct module_iter module_iter_t;
-
-/** Helper type for referencing a module descriptor pointer array. */
-typedef const module_t *const module_list_t;
 
 /** Module invocation callback type. */
 typedef int exec_cb_t(int argc, char **argv);
