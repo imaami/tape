@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "module.h"
+#include "module_iter.h"
 #include "dispatch/dispatch.h"
 #include "grid/grid.h"
 #include "wait/wait.h"

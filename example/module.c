@@ -1,4 +1,5 @@
 #include "module.h"
+#include "module_iter.h"
 #include <stdlib.h>
 #include <string.h>
 
