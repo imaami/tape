@@ -32,9 +32,16 @@ buf_release (buf_t *obj);
 
 __attribute__((__always_inline__, __unused__))
 static inline uint8_t *
+buf_get_data_ptr (buf_t *obj)
+{
+	return obj->data;
+}
+
+__attribute__((__always_inline__, __unused__))
+static inline uint8_t *
 buf_get_write_ptr (buf_t *obj)
 {
-	return &obj->data[obj->used];
+	return obj->data + obj->used;
 }
 
 __attribute__((__always_inline__, __unused__))
