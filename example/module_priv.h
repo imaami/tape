@@ -160,7 +160,7 @@ module_option_help (tape_option_tag_t tag)
 
 __attribute__((__unused__))
 static void
-module_help (const char *line_prefix)
+module_help_cb (const char *line_prefix)
 {
 	const int str_width_max = (int)module_option_string_max_len() + 2;
 	const long tag_value_max = (long)module_option_tag_max();

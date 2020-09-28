@@ -49,5 +49,5 @@ callback (int    argc,
 const module_t dispatch = {
 	"dispatch",
 	"Start command dispatcher.",
-	callback, module_help
+	callback, module_help_cb
 };

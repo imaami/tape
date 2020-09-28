@@ -12,5 +12,5 @@ callback (int    argc __attribute__((__unused__)),
 const module_t grid = {
 	"grid",
 	"Draw an ASCII grid.",
-	callback, module_help
+	callback, module_help_cb
 };
