@@ -46,8 +46,8 @@ callback (int    argc,
 	return dispatcher_run(&dispatcher);
 }
 
-const module_t dispatch = {
-	"dispatch",
+MODULE(
+	dispatch,
 	"Start command dispatcher.",
-	callback, module_help_cb
-};
+	callback
+);

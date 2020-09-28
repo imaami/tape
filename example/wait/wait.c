@@ -12,8 +12,8 @@ callback (int    argc __attribute__((__unused__)),
 	return 0;
 }
 
-const module_t wait = {
-	"wait",
+MODULE(
+	wait,
 	"Sleep for a specified amount of time.",
-	callback, module_help_cb
-};
+	callback
+);

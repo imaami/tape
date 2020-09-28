@@ -158,6 +158,13 @@ module_option_help (tape_option_tag_t tag)
 	}
 }
 
+/** Define a module descriptor. */
+#define MODULE(name_, ...) const module_t name_ = {\
+	#name_,\
+	__VA_ARGS__,\
+	module_help_cb\
+}
+
 __attribute__((__unused__))
 static void
 module_help_cb (const char *line_prefix)
