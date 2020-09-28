@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "module.h"
+#include "module_list.h"
 #include "dispatcher.h"
 
 #define BUF_GROW 8192u
@@ -60,25 +62,27 @@ dispatcher_read_stream (dispatcher_t *obj)
 		return false;
 	}
 
-	for (;;) {
-		buf_reserve(&obj->buf, 1024);
+	buf_t *buf = dispatcher_get_buf(obj);
+	size_t free_space, bytes_read;
 
-		uint8_t *ptr = buf_get_write_ptr(&obj->buf);
-		size_t space = buf_get_free_space(&obj->buf) - 1;
-		size_t count = fread((void *)ptr, 1u, space, obj->fifo.stream);
-
-		buf_consume(&obj->buf, count);
-
-		if (count != space) {
-			ptr = buf_get_write_ptr(&obj->buf);
-			*(char *)ptr = '\0';
-			break;
-		}
-	}
+	do {
+		buf_reserve(buf, 4096);
+		free_space = buf_get_free_space(buf) - 1;
+		bytes_read = fread((void *)buf_get_write_ptr(buf),
+		                   1u, free_space, obj->fifo.stream);
+		buf_consume(buf, bytes_read);
+	} while (bytes_read == free_space);
 
 	bool success = !ferror(obj->fifo.stream);
-	if (!success) {
+
+	if (success) {
+		// null-terminate
+		*(buf_get_write_ptr(buf)) = (uint8_t)'\0';
+		buf_consume(buf, 1);
+
+	} else {
 		fprintf(stderr, "%s: fread failed\n", __func__);
+		buf_release(buf);
 	}
 
 	(void)fclose(obj->fifo.stream);
@@ -86,6 +90,109 @@ dispatcher_read_stream (dispatcher_t *obj)
 	errno = 0;
 
 	return success;
+}
+
+static int
+dispatcher_dispatch (dispatcher_t  *obj __attribute__((__unused__)),
+                     int            argc,
+                     char         **argv)
+{
+	const module_t *module;
+
+	if (0 == strcmp((const char *)argv[0], "dispatch")) {
+		return EXIT_FAILURE;
+	}
+
+	module = module_list_find(argv[0]);
+	if (!module) {
+		return EXIT_FAILURE;
+	}
+
+	return module_invoke(module, argc, argv);
+}
+
+static void
+dispatcher_handle_input (dispatcher_t *obj)
+{
+	buf_t *buf = dispatcher_get_buf(obj);
+	uint8_t *d = buf_get_data_ptr(buf);
+	size_t len = buf->used;
+	size_t i = 0;
+	size_t k = 0;
+	int argc = 0;
+	int c;
+
+	// Count the number of null-terminated arguments
+	for (;; ++i) {
+		if (i >= len) {
+			if (i > k) {
+				argc++;
+			}
+			break;
+		}
+		if (d[i] == (uint8_t)'\0') {
+			argc++;
+			k = i + 1u;
+		}
+	}
+
+	size_t argv_pos, need;
+
+	// Offset for our arg vector to guarantee pointer alignment
+	argv_pos = (len + (sizeof(char *) - 1u)) & ~(sizeof(char *) - 1u);
+
+	// Alignment padding between current write offset and arg vector
+	i = argv_pos - len;
+
+	// Space needed for arg vector incl. padding and terminator
+	need = i + ((size_t)(argc + 1) * sizeof(char *));
+
+	// Reserve the space needed
+	buf_reserve(buf, need);
+
+	// Verify
+	if (buf_get_free_space(buf) < need) {
+		fprintf(stderr, "%s: buffer allocation failed\n", __func__);
+
+	} else {
+		// Set write offset to the beginning of the arg vector
+		buf_consume(buf, i);
+
+		char **argv = (char **)buf_get_write_ptr(buf);
+		d = buf_get_data_ptr(buf);
+		i = 0; // byte position
+		c = 0; // arg vector index
+		k = 0; // arg begin offset
+
+		// Populate the arg vector
+		for (;; ++i) {
+			if (i >= len) {
+				if (i > k) {
+					argv[c++] = (char *)&d[k];
+				}
+				break;
+			}
+			if (d[i] == (uint8_t)'\0') {
+				argv[c++] = (char *)&d[k];
+				k = i + 1u;
+			}
+		}
+
+		// null-terminate
+		argv[c] = NULL;
+
+		(void)dispatcher_dispatch(obj, argc, argv);
+	}
+
+	buf_release(buf);
+}
+
+static void
+dispatcher_listen (dispatcher_t *obj)
+{
+	while (dispatcher_read_stream(obj)) {
+		dispatcher_handle_input(obj);
+	}
 }
 
 int
@@ -103,38 +210,15 @@ dispatcher_run (dispatcher_t *obj)
 		return EXIT_FAILURE;
 	}
 
-	do {
-		errno = 0;
+	errno = 0;
 
-		if (mkfifo(obj->fifo.path, 0666) != 0) {
-			err = errno;
-			fprintf(stderr, "%s: mkfifo(\"%s\", 0666): %s\n", __func__, obj->fifo.path, strerror(err));
-			break;
-		}
+	if (mkfifo(obj->fifo.path, 0666) == 0) {
+		dispatcher_listen(obj);
 
-		while (dispatcher_read_stream(obj)) {
-			const char *str = (const char *)&obj->buf.data[0];
-			const char *end = str + obj->buf.used;
-			int count = 0;
-			for (const char *ptr = str;; ptr++) {
-				if (ptr >= end) {
-					if (ptr > str) {
-						printf("[%d] \"%s\"\n", count, str);
-						count++;
-					}
-					break;
-				}
-				if (*ptr == '\0') {
-					printf("[%d] \"%s\"\n", count, str);
-					count++;
-					str = ptr + 1;
-				}
-			}
-			printf("=> %d arguments\n\n", count);
-			buf_release(&obj->buf);
-		}
-
-	} while (0);
+	} else {
+		err = errno;
+		fprintf(stderr, "%s: mkfifo(\"%s\", 0666): %s\n", __func__, obj->fifo.path, strerror(err));
+	}
 
 	dispatcher_fini(obj);
 
