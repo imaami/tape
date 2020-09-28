@@ -58,8 +58,8 @@ module_iter_next (module_iter_t *iter)
 
 /** Returns a module descriptor pointer, or NULL if not found. */
 extern const module_t *
-module_list_find_by_name (module_list_t *list,
-                          const char    *name);
+module_list_find (module_list_t *list,
+                  const char    *name);
 
 /** Invoke a module with a set of command-line arguments. */
 extern int

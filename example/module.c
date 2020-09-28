@@ -3,8 +3,8 @@
 #include <string.h>
 
 const module_t *
-module_list_find_by_name (module_list_t *list,
-                          const char    *name)
+module_list_find (module_list_t *list,
+                  const char    *name)
 {
 	if (!list || !name) {
 		return NULL;

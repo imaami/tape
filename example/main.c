@@ -24,7 +24,7 @@ main (int    argc,
 	char **cmd_argv;
 	const module_t *module;
 
-	module = module_list_find_by_name(modules, argv[1]);
+	module = module_list_find(modules, argv[1]);
 
 	if (!module) {
 		usage(argv[0]);
