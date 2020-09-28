@@ -1,19 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stddef.h>
 #include <string.h>
 
 #include "module.h"
-#include "module_iter.h"
-#include "dispatch/dispatch.h"
-#include "grid/grid.h"
-#include "wait/wait.h"
-
-static MODULE_LIST( modules,
-	&dispatch,
-	&grid,
-	&wait
-);
+#include "module_list.h"
 
 static void usage (char *argv0);
 
@@ -25,7 +15,7 @@ main (int    argc,
 	char **cmd_argv;
 	const module_t *module;
 
-	module = module_list_find(modules, argv[1]);
+	module = module_list_find(argv[1]);
 
 	if (!module) {
 		usage(argv[0]);
@@ -41,10 +31,7 @@ main (int    argc,
 static void
 usage (char *argv0)
 {
-	int max;
 	char *prog;
-	module_iter_t iter;
-	const module_t *ptr;
 
 	prog = strrchr((const char *)argv0, '/');
 	if (prog) {
@@ -53,23 +40,7 @@ usage (char *argv0)
 		prog = argv0;
 	}
 
-	max = 0;
-
-	for_each_module (ptr, &iter, modules) {
-		int n = (int)strlen(ptr->name);
-		if (n > max) {
-			max = n;
-		}
-	}
-
 	printf("\nusage: %s COMMAND [OPTIONS]...\n", prog);
 
-	for_each_module (ptr, &iter, modules) {
-		printf("\n %-*s [OPTIONS]...\t%s\n\n", max, ptr->name, ptr->what);
-		if (ptr->help) {
-			ptr->help("   ");
-		}
-	}
-
-	putchar('\n');
+	module_list_help();
 }

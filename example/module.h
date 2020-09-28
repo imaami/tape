@@ -3,9 +3,6 @@
 
 #include "module_types.h"
 
-/** Define a module descriptor pointer array. */
-#define MODULE_LIST(name, ...) module_list_t name[] = { __VA_ARGS__, NULL }
-
 /** Module invocation callback type. */
 typedef int exec_cb_t(int argc, char **argv);
 
@@ -20,11 +17,6 @@ struct module
 	exec_cb_t  *exec;
 	help_cb_t  *help;
 };
-
-/** Returns a module descriptor pointer, or NULL if not found. */
-extern const module_t *
-module_list_find (module_list_t *list,
-                  const char    *name);
 
 /** Invoke a module with a set of command-line arguments. */
 extern int
