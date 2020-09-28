@@ -3,6 +3,6 @@
 
 #include "module.h"
 
-extern const module_t wait;
+DECLARE_MODULE(wait);
 
 #endif /* TAPE__EXAMPLE__WAIT__WAIT_H__INCLUDED_ */

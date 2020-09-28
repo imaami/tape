@@ -3,6 +3,9 @@
 
 #include "module_types.h"
 
+/** Declare a module descriptor. */
+#define DECLARE_MODULE(name) extern const module_t name
+
 /** Module invocation callback type. */
 typedef int exec_cb_t(int argc, char **argv);
 

@@ -3,6 +3,6 @@
 
 #include "module.h"
 
-extern const module_t grid;
+DECLARE_MODULE(grid);
 
 #endif /* TAPE__EXAMPLE__GRID__GRID_H__INCLUDED_ */

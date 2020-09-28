@@ -3,6 +3,6 @@
 
 #include "module.h"
 
-extern const module_t dispatch;
+DECLARE_MODULE(dispatch);
 
 #endif /* TAPE__EXAMPLE__DISPATCH__DISPATCH_H__INCLUDED_ */
