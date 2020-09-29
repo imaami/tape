@@ -2,7 +2,7 @@ override DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 include $(DIR)../common.mk
 
 override TARGET := example
-override MODULES := call die dispatch
+override MODULES := call die dispatch run
 
 override C_SRC   := $(wildcard $(DIR)*.c)
 override CXX_SRC := $(wildcard $(DIR)*.cpp)

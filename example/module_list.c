@@ -4,6 +4,7 @@
 
 #include "dispatch/dispatch.h"
 #include "call/call.h"
+#include "run/run.h"
 #include "die/die.h"
 
 #include "module_list.h"
@@ -12,6 +13,7 @@
 static MODULE_LIST( modules,
 	&dispatch,
 	&call,
+	&run,
 	&die
 );
 

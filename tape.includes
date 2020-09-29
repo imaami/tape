@@ -3,4 +3,5 @@ example
 example/call
 example/die
 example/dispatch
+example/run
 src

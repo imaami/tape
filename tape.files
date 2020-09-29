@@ -10,13 +10,11 @@ example/buf.h
 example/call/Makefile
 example/call/call.c
 example/call/call.h
-example/call/options.h
 example/command.c
 example/command.h
 example/die/Makefile
 example/die/die.c
 example/die/die.h
-example/die/options.h
 example/dispatch/Makefile
 example/dispatch/dispatch.c
 example/dispatch/dispatch.h
@@ -36,6 +34,9 @@ example/module_list.c
 example/module_list.h
 example/module_priv.h
 example/module_types.h
+example/run/Makefile
+example/run/run.c
+example/run/run.h
 include/options_priv.h
 include/tape.h
 include/tape_impl.hpp
