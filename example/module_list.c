@@ -3,16 +3,16 @@
 #include <string.h>
 
 #include "dispatch/dispatch.h"
+#include "call/call.h"
 #include "die/die.h"
-#include "wait/wait.h"
 
 #include "module_list.h"
 #include "module_iter.h"
 
 static MODULE_LIST( modules,
 	&dispatch,
-	&die,
-	&wait
+	&call,
+	&die
 );
 
 const module_t *

@@ -1,4 +1,4 @@
-#include "wait.h"
+#include "call.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,12 +8,11 @@ static int
 callback (int    argc __attribute__((__unused__)),
           char **argv __attribute__((__unused__)))
 {
-	puts("<wait>");
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 MODULE(
-	wait,
-	"Sleep for a specified amount of time.",
+	call,
+	"Call a command.",
 	callback
 );

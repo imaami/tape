@@ -1,6 +1,6 @@
 include
 example
+example/call
 example/die
 example/dispatch
-example/wait
 src

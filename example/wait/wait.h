@@ -1,8 +1,0 @@
-#ifndef TAPE__EXAMPLE__WAIT__WAIT_H__INCLUDED_
-#define TAPE__EXAMPLE__WAIT__WAIT_H__INCLUDED_
-
-#include "module.h"
-
-DECLARE_MODULE(wait);
-
-#endif /* TAPE__EXAMPLE__WAIT__WAIT_H__INCLUDED_ */
