@@ -6,6 +6,9 @@
 /** Module descriptor type. */
 typedef struct module module_t;
 
+/** Module flags type. */
+typedef enum module_flag module_flag_t;
+
 /** Module iterator type. */
 typedef struct module_iter module_iter_t;
 

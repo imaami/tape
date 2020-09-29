@@ -16,7 +16,9 @@ static MODULE_LIST( modules,
 );
 
 const module_t *
-module_list_find (const char *name)
+module_list_find_cond (const char    *name,
+                       module_flag_t  mask,
+                       module_flag_t  cond)
 {
 	if (!name || !*name) {
 		return NULL;
@@ -26,7 +28,8 @@ module_list_find (const char *name)
 	const module_t *ptr;
 
 	for_each_module (ptr, &iter, modules) {
-		if (!strcmp(name, ptr->name)) {
+		if ((ptr->flags & mask) == cond
+		    && !strcmp(name, ptr->name)) {
 			break;
 		}
 	}
@@ -35,7 +38,8 @@ module_list_find (const char *name)
 }
 
 void
-module_list_help (void)
+module_list_help_cond (module_flag_t mask,
+                       module_flag_t cond)
 {
 	int max;
 	module_iter_t iter;
@@ -44,16 +48,24 @@ module_list_help (void)
 	max = 0;
 
 	for_each_module (ptr, &iter, modules) {
-		int n = (int)strlen(ptr->name);
-		if (n > max) {
-			max = n;
+		if ((ptr->flags & mask) == cond) {
+			int n = (int)strlen(ptr->name);
+			if (n > max) {
+				max = n;
+			}
 		}
 	}
 
+	if (max == 0) {
+		return;
+	}
+
 	for_each_module (ptr, &iter, modules) {
-		printf("\n %-*s [OPTIONS]...\t%s\n\n", max, ptr->name, ptr->what);
-		if (ptr->help) {
-			ptr->help("   ");
+		if ((ptr->flags & mask) == cond) {
+			printf("\n %-*s [OPTIONS]...\t%s\n\n", max, ptr->name, ptr->what);
+			if (ptr->help) {
+				ptr->help("   ");
+			}
 		}
 	}
 

@@ -1,13 +1,26 @@
 #ifndef TAPE__EXAMPLE__MODULE_PRIV_H__INCLUDED_
 #define TAPE__EXAMPLE__MODULE_PRIV_H__INCLUDED_
 
+#include <stddef.h>
+#include <stdlib.h>
+
+#ifdef BUILTIN_MODULE
+
+/** Define a builtin module descriptor. */
+#define MODULE(name_, ...) const module_t name_ = {\
+	#name_,\
+	__VA_ARGS__,\
+	NULL,\
+	MODULE_FLAG_BUILTIN\
+}
+
+#else
+
 #include "tape.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include <stddef.h>
 #include <stdbool.h>
 
 __attribute__((__always_inline__, __pure__))
@@ -162,7 +175,8 @@ module_option_help (tape_option_tag_t tag)
 #define MODULE(name_, ...) const module_t name_ = {\
 	#name_,\
 	__VA_ARGS__,\
-	module_help_cb\
+	module_help_cb,\
+	MODULE_FLAG_NONE\
 }
 
 __attribute__((__unused__))
@@ -187,5 +201,7 @@ module_help_cb (const char *line_prefix)
 		printf("%s-%c, --%-*s\t%s\n", line_prefix, chr, str_width_max, str, help_str);
 	}
 }
+
+#endif /* BUILTIN_MODULE */
 
 #endif /* TAPE__EXAMPLE__MODULE_PRIV_H__INCLUDED_ */

@@ -1,3 +1,5 @@
+#define BUILTIN_MODULE
+
 #include "die.h"
 #include "module_priv.h"
 

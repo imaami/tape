@@ -1,3 +1,5 @@
+#define BUILTIN_MODULE
+
 #include "call.h"
 #include <stdio.h>
 #include <stdlib.h>

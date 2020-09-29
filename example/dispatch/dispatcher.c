@@ -103,7 +103,7 @@ dispatcher_dispatch (dispatcher_t  *obj __attribute__((__unused__)),
 		return EXIT_FAILURE;
 	}
 
-	module = module_list_find(argv[0]);
+	module = module_list_find_builtin(argv[0]);
 	if (!module) {
 		return EXIT_FAILURE;
 	}

@@ -30,6 +30,7 @@ example/list.h
 example/main.c
 example/module.c
 example/module.h
+example/module_flag.h
 example/module_iter.h
 example/module_list.c
 example/module_list.h
