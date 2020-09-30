@@ -1,6 +1,10 @@
 include
 example
+example/add_command
+example/add_handler
 example/call
+example/del_command
+example/del_handler
 example/die
 example/dispatch
 example/run

@@ -1,4 +1,4 @@
-#include "call.h"
+#include "del_handler.h"
 #include "module_priv.h"
 
 static int
@@ -9,7 +9,7 @@ callback (int    argc __attribute__((__unused__)),
 }
 
 MODULE(
-	call,
-	"Call a command.",
+	del_handler,
+	"Remove a registered handler.",
 	callback
 );

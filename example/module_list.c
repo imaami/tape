@@ -3,18 +3,26 @@
 #include <string.h>
 
 #include "dispatch/dispatch.h"
+#include "add_handler/add_handler.h"
+#include "add_command/add_command.h"
 #include "call/call.h"
-#include "run/run.h"
+#include "del_command/del_command.h"
+#include "del_handler/del_handler.h"
 #include "die/die.h"
+#include "run/run.h"
 
 #include "module_list.h"
 #include "module_iter.h"
 
 static MODULE_LIST( modules,
 	&dispatch,
+	&add_handler,
+	&add_command,
 	&call,
-	&run,
-	&die
+	&del_command,
+	&del_handler,
+	&die,
+	&run
 );
 
 const module_t *
