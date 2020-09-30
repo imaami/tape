@@ -8,8 +8,6 @@
 #include "module_list.h"
 #include "dispatcher.h"
 
-#define BUF_GROW 8192u
-
 static void
 dispatcher_fini (dispatcher_t *obj)
 {
