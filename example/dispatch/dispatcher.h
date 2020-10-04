@@ -6,23 +6,20 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "fifo.h"
 #include "buf.h"
 
 typedef struct dispatcher dispatcher_t;
 
 struct dispatcher
 {
-	struct {
-		char *path;
-		FILE *stream;
-	} fifo;
-
-	buf_t buf;
+	fifo_t fifo;
+	buf_t  buf;
 };
 
 extern bool
 dispatcher_init (dispatcher_t *obj,
-                 const char   *fifo);
+                 const char   *fifo_path);
 
 extern int
 dispatcher_run (dispatcher_t *obj);

@@ -11,15 +11,7 @@
 static void
 dispatcher_fini (dispatcher_t *obj)
 {
-	if (obj->fifo.path) {
-		free(obj->fifo.path);
-	}
-
-	if (obj->fifo.stream) {
-		(void)fclose(obj->fifo.stream);
-		errno = 0;
-	}
-
+	fifo_fini(&obj->fifo);
 	buf_fini(&obj->buf);
 
 	memset((void *)obj, 0, sizeof(*obj));
@@ -27,67 +19,25 @@ dispatcher_fini (dispatcher_t *obj)
 
 bool
 dispatcher_init (dispatcher_t *obj,
-                 const char   *fifo)
+                 const char   *fifo_path)
 {
-	if (!obj || !fifo || !*fifo) {
+	if (!obj || !fifo_path || !*fifo_path) {
 		fprintf(stderr, "%s: invalid arguments\n", __func__);
 		return false;
 	}
 
 	memset((void *)obj, 0, sizeof(*obj));
 
-	errno = 0;
-	obj->fifo.path = strdup(fifo);
-
-	if (!obj->fifo.path) {
-		fprintf(stderr, "%s: strdup(\"%s\"): %s\n", __func__, fifo, strerror(errno));
+	if (!fifo_init(&obj->fifo, fifo_path)) {
 		return false;
 	}
 
-	obj->fifo.stream = NULL;
-	buf_init(&obj->buf);
+	if (!buf_init(&obj->buf)) {
+		fifo_fini(&obj->fifo);
+		return false;
+	}
 
 	return true;
-}
-
-static bool
-dispatcher_read_stream (dispatcher_t *obj)
-{
-	errno = 0;
-
-	if (!(obj->fifo.stream = fopen(obj->fifo.path, "rbe"))) {
-		fprintf(stderr, "%s: fopen(\"%s\", \"rbe\"): %s\n", __func__, obj->fifo.path, strerror(errno));
-		return false;
-	}
-
-	buf_t *buf = dispatcher_get_buf(obj);
-	size_t free_space, bytes_read;
-
-	do {
-		buf_reserve(buf, 4096);
-		free_space = buf_get_free_space(buf) - 1;
-		bytes_read = fread((void *)buf_get_write_ptr(buf),
-		                   1u, free_space, obj->fifo.stream);
-		buf_consume(buf, bytes_read);
-	} while (bytes_read == free_space);
-
-	bool success = !ferror(obj->fifo.stream);
-
-	if (success) {
-		// null-terminate
-		*(buf_get_write_ptr(buf)) = (uint8_t)'\0';
-		buf_consume(buf, 1);
-
-	} else {
-		fprintf(stderr, "%s: fread failed\n", __func__);
-		buf_release(buf);
-	}
-
-	(void)fclose(obj->fifo.stream);
-	obj->fifo.stream = NULL;
-	errno = 0;
-
-	return success;
 }
 
 static int
@@ -188,7 +138,7 @@ dispatcher_handle_input (dispatcher_t *obj)
 static void
 dispatcher_listen (dispatcher_t *obj)
 {
-	while (dispatcher_read_stream(obj)) {
+	while (fifo_read(&obj->fifo, &obj->buf)) {
 		dispatcher_handle_input(obj);
 	}
 }
@@ -208,14 +158,10 @@ dispatcher_run (dispatcher_t *obj)
 		return EXIT_FAILURE;
 	}
 
-	errno = 0;
-
-	if (mkfifo(obj->fifo.path, 0666) == 0) {
+	if (fifo_mkfifo(&obj->fifo)) {
 		dispatcher_listen(obj);
-
 	} else {
-		err = errno;
-		fprintf(stderr, "%s: mkfifo(\"%s\", 0666): %s\n", __func__, obj->fifo.path, strerror(err));
+		err = EXIT_FAILURE;
 	}
 
 	dispatcher_fini(obj);

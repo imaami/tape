@@ -15,7 +15,7 @@ callback (int    argc,
 		return 1;
 	}
 
-	const char *fifo = NULL;
+	const char *fifo_path = NULL;
 
 	if (argv[1][0] == '-') {
 		const char *arg = NULL;
@@ -29,16 +29,16 @@ callback (int    argc,
 		}
 
 		if (arg != NULL && tag == Fifo) {
-			fifo = arg;
+			fifo_path = arg;
 		}
 	}
 
-	if (!fifo) {
+	if (!fifo_path) {
 		fprintf(stderr, "%s: invalid argument: %s\n", argv[0], argv[1]);
 		return 1;
 	}
 
-	if (!dispatcher_init(&dispatcher, fifo)) {
+	if (!dispatcher_init(&dispatcher, fifo_path)) {
 		fprintf(stderr, "%s: dispatcher init failed\n", argv[0]);
 		return 1;
 	}
