@@ -38,6 +38,8 @@ example/dispatch/dispatch.h
 example/dispatch/dispatcher.c
 example/dispatch/dispatcher.h
 example/dispatch/options.h
+example/fifo.c
+example/fifo.h
 example/handler.c
 example/handler.h
 example/list.c
