@@ -53,6 +53,8 @@ example/module_list.c
 example/module_list.h
 example/module_priv.h
 example/module_types.h
+example/relay.c
+example/relay.h
 example/run/Makefile
 example/run/run.c
 example/run/run.h
